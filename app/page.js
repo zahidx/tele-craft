@@ -1,101 +1,173 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useEffect } from "react";
+import { useTheme } from "next-themes";
+import { motion } from "framer-motion";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/pagination";
+import { Pagination } from "swiper/modules";
+import {
+  PlayCircle,
+  PenTool,
+  Users,
+  Book,
+  Star,
+  ChevronRight,
+} from "lucide-react";
+import Link from "next/link";
+import AOS from "aos";
+import "aos/dist/aos.css";
+
+// Sample AI-Generated Stories
+const stories = [
+  {
+    title: "The Shadow Realm",
+    description: "Unravel secrets in a forbidden world beyond time.",
+    image: "/images/story1.jpg",
+  },
+  {
+    title: "Neon Cyberpunk",
+    description: "A future where AI controls the metropolis.",
+    image: "/images/story2.jpg",
+  },
+  {
+    title: "Echoes of the Past",
+    description: "Time travel meets historical mysteries.",
+    image: "/images/story3.jpg",
+  },
+];
+
+// AI Story Discovery Simulation
+const generateStory = () => {
+  const titles = ["Celestial Voyage", "Code Apocalypse", "The Forgotten Realm"];
+  const descriptions = [
+    "A journey across galaxies to uncover ancient civilizations.",
+    "A future where AI rebels against humanity.",
+    "A secret world hidden in lost history books.",
+  ];
+  return {
+    title: titles[Math.floor(Math.random() * titles.length)],
+    description: descriptions[Math.floor(Math.random() * descriptions.length)],
+    image: `/images/story${Math.floor(Math.random() * 3) + 1}.jpg`,
+  };
+};
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const { theme } = useTheme();
+  const [aiStory, setAiStory] = useState(generateStory);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  // Initialize AOS inside the component
+  useEffect(() => {
+    AOS.init({ duration: 1000, easing: "ease-in-out", once: true });
+
+    const interval = setInterval(() => {
+      setAiStory(generateStory());
+    }, 5000);
+
+    return () => clearInterval(interval); // Clear interval on cleanup
+  }, []);
+
+  return (
+    <main className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+      
+      {/* Hero Section */}
+      <section
+        className="relative w-full h-[90vh] flex items-center justify-center text-center bg-gradient-to-r from-blue-500 to-purple-600 dark:from-gray-800 dark:to-gray-900"
+        data-aos="fade-up"
+      >
+        <motion.div className="max-w-3xl mx-auto">
+          <h1 className="text-6xl font-extrabold text-white drop-shadow-lg">
+            <span className="bg-gradient-to-r from-yellow-300 to-orange-500 text-transparent bg-clip-text">
+              TeleCraft
+            </span>
+          </h1>
+          <p className="mt-4 text-lg text-gray-200">
+            Explore AI-powered stories, immerse in digital adventures.
+          </p>
+          <div className="mt-6 flex justify-center gap-4">
+            <Link href="/create">
+              <button
+                className="px-6 py-3 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold rounded-xl shadow-md transition"
+                data-aos="zoom-in"
+              >
+                <PenTool className="inline-block w-5 h-5 mr-2" />
+                Start Writing
+              </button>
+            </Link>
+            <Link href="/interactive">
+              <button
+                className="px-6 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-bold rounded-xl shadow-md hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+                data-aos="zoom-in"
+              >
+                <PlayCircle className="inline-block w-5 h-5 mr-2" />
+                Interactive Mode
+              </button>
+            </Link>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* AI Story Discovery */}
+      <section className="py-16 text-center" data-aos="fade-up">
+        <h2 className="text-4xl font-bold">AI Story Discovery</h2>
+        <motion.div
+          className="mt-6 bg-gray-100 dark:bg-gray-800 p-6 rounded-xl shadow-lg max-w-3xl mx-auto"
+        >
+          <h3 className="text-2xl font-semibold">{aiStory.title}</h3>
+          <p className="text-gray-600 dark:text-gray-300">{aiStory.description}</p>
+        </motion.div>
+      </section>
+
+      {/* Story Preview Carousel */}
+      <section className="py-16 bg-gray-100 dark:bg-gray-800" data-aos="fade-left">
+        <h2 className="text-4xl font-bold text-center">Live Story Previews</h2>
+        <Swiper
+          modules={[Pagination]}
+          spaceBetween={20}
+          slidesPerView={1.2}
+          pagination={{ clickable: true }}
+          className="mt-6 max-w-5xl mx-auto"
+        >
+          {stories.map((story, index) => (
+            <SwiperSlide key={index}>
+              <motion.div
+                className="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-lg"
+              >
+                <img src={story.image} alt={story.title} className="w-full h-52 object-cover rounded-md" />
+                <h3 className="text-xl font-semibold mt-4">{story.title}</h3>
+                <p className="text-gray-600 dark:text-gray-300">{story.description}</p>
+                <Link href="/story">
+                  <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition">
+                    Read More <ChevronRight className="inline-block w-5 h-5 ml-1" />
+                  </button>
+                </Link>
+              </motion.div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-16" data-aos="fade-up">
+        <div className="max-w-6xl mx-auto text-center">
+          <h2 className="text-4xl font-bold">Community Stats</h2>
+          <div className="mt-8 flex justify-center gap-12">
+            <div className="text-center" data-aos="flip-up">
+              <Users className="w-12 h-12 mx-auto text-blue-500" />
+              <p className="text-xl font-semibold mt-2">50K+ Users</p>
+            </div>
+            <div className="text-center" data-aos="flip-up">
+              <Book className="w-12 h-12 mx-auto text-green-500" />
+              <p className="text-xl font-semibold mt-2">120K+ Stories</p>
+            </div>
+            <div className="text-center" data-aos="flip-up">
+              <Star className="w-12 h-12 mx-auto text-yellow-500" />
+              <p className="text-xl font-semibold mt-2">4.8/5 Ratings</p>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </section>
+    </main>
   );
 }
